@@ -104,6 +104,31 @@ router.post(
 
 /**
  * @swagger
+ * /records/search:
+ *   get:
+ *     summary: Search records by category or notes (case-insensitive)
+ *     tags: [Records]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search query string - searches in category and notes fields
+ *     responses:
+ *       200:
+ *         description: Search results returned as JSON array (no pagination)
+ *       400:
+ *         description: Missing or empty search query (q parameter required)
+ *       401:
+ *         description: Authentication required
+ */
+router.get('/search', recordController.searchRecords);
+
+/**
+ * @swagger
  * /records/{id}:
  *   get:
  *     summary: Get a specific record by ID
@@ -205,70 +230,5 @@ router.put(
  *         description: Record not found
  */
 router.delete('/:id', checkRole('ADMIN'), recordController.deleteRecord);
-
-/**
- * @swagger
- * /records/search:
- *   get:
- *     summary: Search records by category or notes (case-insensitive)
- *     tags: [Records]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: query
- *         name: q
- *         required: true
- *         schema:
- *           type: string
- *         description: Search query string - searches in category and notes fields
- *     responses:
- *       200:
- *         description: Search results returned as JSON array (no pagination)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     records:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           amount:
- *                             type: number
- *                           type:
- *                             type: string
- *                             enum: [INCOME, EXPENSE]
- *                           category:
- *                             type: string
- *                           date:
- *                             type: string
- *                             format: date-time
- *                           notes:
- *                             type: string
- *                           user:
- *                             type: object
- *                             properties:
- *                               id:
- *                                 type: string
- *                               name:
- *                                 type: string
- *                               email:
- *                                 type: string
- *       400:
- *         description: Missing or empty search query (q parameter required)
- *       401:
- *         description: Authentication required
- */
-router.get('/search', recordController.searchRecords);
 
 export default router;

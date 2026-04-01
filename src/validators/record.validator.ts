@@ -21,6 +21,6 @@ export const filterSchema = z.object({
   category: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
-  page: z.string().transform(Number).default(1),
-  limit: z.string().transform(Number).default(10),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(10),
 });
